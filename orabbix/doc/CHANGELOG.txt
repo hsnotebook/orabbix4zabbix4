@@ -1,0 +1,187 @@
+0.1 Initial release
+
+0.2 fixed some error on configuration class
+    added a new query to inspect user locked as LOCKED(TIMED) and EXPIRED(GRACE)
+    correct problem with database that has wrong connection parameters or connection 
+    is unavailable
+    added on query.props <QUERY_NAME>.NoDataFound= where you can specify a value 
+    that will be used when no data are founded.
+
+2010-03-29
+0.3 fixed trouble with connection, now if a database is unavailable will be removed 
+and on next loop 
+  	the daemon try again to get connection.
+  	Besides now all the configuration is dynamics, if you add a database this will 
+    be used on next loop.
+	  There is only a constraint the ZabbixDaemon.MaxThreadNumber need be >= of the 
+    number of your databases.
+
+2010-03-31
+0.4 Modified the version query now return :
+    - DB_NAME = dbname - INSTANCE_NAME = instancename
+    - SERVERNAME = server.example.com - SERVERADDRESS = 192.168.0.1
+    CATALOG Oracle Database Catalog Views 10.2.0.4.0 VALID
+    CATJAVA Oracle Database Java Packages 10.2.0.4.0 VALID
+    CATPROC Oracle Database Packages and Types 10.2.0.4.0 VALID
+    EXF Oracle Expression Filter 10.2.0.4.0 VALID
+    JAVAVM JServer JAVA Virtual Machine 10.2.0.4.0 VALID
+    ORDIM Oracle interMedia 10.2.0.4.0 VALID
+    OWM Oracle Workspace Manager 10.2.0.4.3 VALID
+    RUL Oracle Rules Manager 10.2.0.4.0 VALID
+    XDB Oracle XML Database 10.2.0.4.0 VALID
+    XML Oracle XDK 10.2.0.4.0 VALID 
+    as you can see i've added this information: DB_NAME INSTANCE_NAME SERVERNAME SERVERADDRESS.
+    DB_NAME and INSTANCE_NAME can be different just in case of RAC or DATAGUARD configuration.
+    Modified how retrieve the values from resultset now is supported an output with 
+    more column and more rows
+    Database are removed dynamically this mean that you can add and remove database 
+    without restart the daemon.
+    Founded a little bug on connection to database, there was a connection that was 
+    idle and never used now is fixed.
+ 
+0.5
+	Added retry on ZabbixSend items and values (max 10 times) , increased socket timeout to 30 sec.
+	Now exception are managed better
+0.6	
+	Added an item to monitor Data Guard Error, and the relative trigger.
+	Changed parameter in config.properties from ZabbixDaemon to OrabbixDaemon because are cause of a lot of confusion.
+	some change on documentation's file README.txt 
+0.6.1
+	This is the same release i’ve just updated the template_oracle.xml inside Template directory.
+	the old one was empty.
+
+0.9
+	Fixed a minor bug about quantity of thread generated.
+	Fixed problem concerning wrong Locale setting on server
+	Added support for more than one Zabbix Server.
+	Completely rewrote the "sender" Object
+
+0.9.1 Added a new trigger to understand if Orabbix is sending data or not
+	  Added "Alive" item and trigger to see if database is available
+
+0.9.2 Added more information on error that should be really appreciate in case of problem with configuration files,
+	  logfiles are more verbose, or better should be easily understandable.
+	  Added a features that send “0? (zero) or the values NoDataFound when a database is not available
+	  
+0.9.3 Added default values for:
+		MaxWait
+		MaxIdle
+		MaxActive
+		OrabbixDaemon.Sleep
+		OrabbixDaemon.MaxThreadNumber (this one is calculated and based from number of monitored databases)
+	New features:
+	you can specify for each database different values of:
+		MaxWait
+		MaxIdle
+		MaxActive
+		
+		
+1.0.0
+	Modified templates and divided on 3 separed files:
+		one for items
+		one for trigger
+		on for graphs
+	I've modified the logging system and wrote a centralized object to log so there is a single poit to modify.
+	 
+1.0.1
+	Added one item that keep monitored Uptime
+	Modified DBEquiry to be more verbose a nd more preceise on error while   executing query
+Modified the query that report usage of tablespaces now work also with autoextend and maxsize unlimited
+
+1.0.2 correct some minor bugs
+
+1.0.3 added two items dbsize and dbfilesize that shows the size of database and	the space allocated from databases those values are added in MB
+	for those items i've added a relative graphs
+	Added more log information on error
+	Correct archivelog query to run on every databases
+	Added a default value for uptime when Oracle is not available
+	
+1.0.4 Fixed a problem concerning wrong data sent to zabbix server
+    improved a rebuild and dynamic linking of new database without restart Orabbix
+    
+    
+1.1.0
+  I've modified query according to post
+  http://www.zabbix.com/forum/showpost.php?p=73509&postcount=122
+  and as suggestet from Brian H. resultset is protected from null values
+  Thank you Brian H.
+
+  Added a parameter 
+    <QueryName>.Period=10 that introduce a period execution between two executions of the specified query 
+      value are expressed in minute.If not specified any value use the default value of 5 minute
+  Added parameter 
+    <QueryName>.Active=[true|false] if true query is executed otherwise skipped 
+  Added a queryfile to each databases spcified by 
+    <DBNAME>.QueryListFile=./conf/query.props
+    so each database can have his own customized parameter files.
+  Added
+    <QueryName>.NoDataFound default value if no data found
+    <QueryName>.RaceConditionQuery  
+    <QueryName>.RaceConditionValue if this value match the returned from "RaceConditionQuery" QueryName is executed otherwise skipped
+
+1.2.0-RC1
+   
+    Modified as suggested from Sean, Session's graphs now "Active Session" is at the bottom of the
+  stack so you can see how close you are to reaching the trigger.
+   
+    Improved scalability and multithreading now Orabbix can scale very easily 
+    Now controls executed on databases  are independent of each other
+    I removed almost completely sequential procedure on software so bottlenecks are higly reduced
+    Added parameter 
+    <QueryName>.Trim=[true|false] if true the resultset is trimmed (default is true)
+    <QueryName>.AddSpaces=[true|false] if true the add a space between columns of resultset(default is true)
+    <QueryName>.ExcludeColumnsList=[1,2,3,..n]= exclude from result set the 1st, the 2nd etc.. columns from resultset                         
+ 
+    Now Orabbix use ojdbc6 for Oracle 11.2 
+    NOTE: This is a Candidare Release 
+ 
+ 
+1.2.0-RC3
+   modified the extension  of all configuration files to remove collision (you will never found overwrote your own config files)
+   Now is needed specify the QueryFile for each database Implemented Apache Daemon and now Orabbix can run as a service on MS 
+        Windows
+   NOTE:There is no more a default QueryFile
+   Solved an issue about "alive" items
+   Changed startup script now jar don't have more a predefined classpath but it's generated dynamically
+   
+1.2.1 added a new parameter in queryfile to define a default period valid for whole queries in file.
+    the parameter is :
+        DefaultQueryPeriod=<default period in minutes>
+    still possible to define a custom period for each query with
+    <QUERY_NAME>.Period=<period in minutes>
+    
+   
+10/12/2011
+1.2.2 
+    Added the following parameter on main configuration file:
+    DefaultUser = <USERNAME> 
+    DefaultPassword = <PASSWORD>
+    <DB_NAME>.ExtraQueryListFile =
+    
+    on query's properties file I've added the following parameter:
+    <QUERY_NAME>.WhenNotAlive = <VALUE>
+
+    with these parameter you can define a default username and password for 
+    all the database. 
+    DefaultUser = <USERNAME> 
+    DefaultPassword = <PASSWORD>
+    this default parameter can be overridden using the couple 
+    <DB_NAME>.User and <DB_NAME>.User
+    Is possible to override only Username or Password.
+    
+    the following parameter
+    <DB_NAME>.ExtraQueryListFile = 
+    add another custom query to a default query file.
+    if there are duplicate the ExtraQueryListFile will override them.
+    
+    the following parameter
+    <QUERY_NAME>.WhenNotAlive = <VALUE>
+    is used to specify a value or a string to send if a database is not working,
+    doing so you are going to "clean" the graphs generated in Zabbix with a "set" value.
+    This fix the issue introduced by "Zabbix Trapper":
+     - if Zabbix don't receive data the graphs don't change anymore.
+    
+    
+
+	
+	

@@ -1,0 +1,76 @@
+#!/bin/sh
+# This is the init script for starting up the
+# Orabbix daemon
+#
+# chkconfig: 345 91 10
+# description: Starts and stops the orabbix daemon.
+# processname: orabbix
+#
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Get config.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ "${NETWORKING}" = "no" ] && exit 0
+
+orabbix=/opt/orabbix
+pidfile=`cat $orabbix/conf/config.props |grep -i pidfile |sed 's/.*PidFile=//'`
+startup=$orabbix/run.sh
+
+start(){
+        echo -n "Starting Orabbix service:"
+        cd $orabbix
+        $startup
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/orabbix
+        return $RETVAL
+}
+
+stop(){
+        echo -n "Stopping Orabbix service:"
+        pid=`ps -ef  |grep java |grep orabbix | awk '{ print $2 }'`
+        kill `cat $orabbix/logs/orabbix.pid`
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && rm -f  /var/lock/subsys/orabbix
+        return $RETVAL
+}
+
+restart(){
+        stop
+        start
+}
+
+status(){
+        numproc=`ps -ef | grep java | grep orabbix | grep -v grep  | wc -l`
+        if [ "$numproc" -gt 0 ]; then
+        echo "Orabbix is running"
+        else
+        echo "Orabbix is stopped"
+        fi
+}
+
+# See how we were called.
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        status)
+                status
+                ;;
+        restart)
+                restart
+                ;;
+        *)
+                echo "Usage: $0 {start|stop|status|restart}"
+                exit 1
+esac
+exit $RETVAL
+
+                                                                                               

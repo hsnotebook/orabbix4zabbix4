@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export version="1.0" date="17.12.10" time="12.05">
+	<hosts>
+		<host name="Template_Oracle">
+			<proxy_hostid>0</proxy_hostid>
+			<useip>0</useip>
+			<dns></dns>
+			<ip>0.0.0.0</ip>
+			<port>10050</port>
+			<status>3</status>
+			<useipmi>0</useipmi>
+			<ipmi_ip>127.0.0.1</ipmi_ip>
+			<ipmi_port>623</ipmi_port>
+			<ipmi_authtype>-1</ipmi_authtype>
+			<ipmi_privilege>2</ipmi_privilege>
+			<ipmi_username></ipmi_username>
+			<ipmi_password></ipmi_password>
+			<groups>
+				<group>TEMPLATES</group>
+			</groups>
+			<triggers>
+				<trigger>
+					<description>Alive {HOSTNAME}</description>
+					<type>0</type>
+					<expression>{Template_Oracle:alive.last(0)}#1</expression>
+					<url></url>
+					<status>0</status>
+					<priority>4</priority>
+					<comments></comments>
+				</trigger>
+				<trigger>
+					<description>No data received from Orabbix</description>
+					<type>0</type>
+					<expression>{Template_Oracle:alive.sum(600)}&lt;1</expression>
+					<url></url>
+					<status>0</status>
+					<priority>4</priority>
+					<comments>No data retrieved from Orabbix for database</comments>
+				</trigger>
+				<trigger>
+					<description>Archivelog</description>
+					<type>0</type>
+					<expression>{Template_Oracle:archive.last(0)}&gt;100</expression>
+					<url></url>
+					<status>0</status>
+					<priority>2</priority>
+					<comments>HIGH Archivelog generation</comments>
+				</trigger>
+				<trigger>
+					<description>Audit on {HOSTNAME}</description>
+					<type>0</type>
+					<expression>{Template_Oracle:audit.str(none)}=0</expression>
+					<url></url>
+					<status>0</status>
+					<priority>4</priority>
+					<comments></comments>
+				</trigger>
+				<trigger>
+					<description>Hit Ratio on {HOSTNAME}</description>
+					<type>0</type>
+					<expression>{Template_Oracle:hitratio_table_proc.avg(60)}&lt;50|{Template_Oracle:hitratio_trigger.avg(60)}&lt;50|{Template_Oracle:hitratio_sqlarea.avg(60)}&lt;50|{Template_Oracle:hitratio_body.avg(60)}&lt;50</expression>
+					<url></url>
+					<status>0</status>
+					<priority>4</priority>
+					<comments></comments>
+				</trigger>
+				<trigger>
+					<description>Locks on {HOSTNAME}</description>
+					<type>0</type>
+					<expression>{Template_Oracle:locks.str(none)}=0</expression>
+					<url></url>
+					<status>0</status>
+					<priority>4</priority>
+					<comments></comments>
+				</trigger>
+				<trigger>
+					<description>Process Alarm on {HOSTNAME}</description>
+					<type>0</type>
+					<expression>({Template_Oracle:procnum.last(0)}*100/{Template_Oracle:maxprocs.last(0)})&gt;80</expression>
+					<url></url>
+					<status>0</status>
+					<priority>4</priority>
+					<comments></comments>
+				</trigger>
+				<trigger>
+					<description>Session Alarm on {HOSTNAME}</description>
+					<type>0</type>
+					<expression>({Template_Oracle:session.last(0)}*100/{Template_Oracle:maxsession.last(0)})&gt;80</expression>
+					<url>http://10.10.64.93/overview.php</url>
+					<status>0</status>
+					<priority>4</priority>
+					<comments></comments>
+				</trigger>
+				<trigger>
+					<description>PGA Alarm on {HOSTNAME}</description>
+					<type>0</type>
+					<expression>({Template_Oracle:pga.last(0)}*100/{Template_Oracle:pga_aggregate_target.last(0)})&gt;90</expression>
+					<url>http://10.10.64.93/overview.php</url>
+					<status>0</status>
+					<priority>4</priority>
+					<comments></comments>
+				</trigger>
+				<trigger>
+					<description>Active Session {HOSTNAME}</description>
+					<type>0</type>
+					<expression>{Template_Oracle:session_active.last(0)}&gt;10</expression>
+					<url></url>
+					<status>0</status>
+					<priority>4</priority>
+					<comments>DANGER</comments>
+				</trigger>
+				<trigger>
+					<description>Active Session {HOSTNAME}</description>
+					<type>0</type>
+					<expression>{Template_Oracle:session_active.last(0)}&gt;20</expression>
+					<url></url>
+					<status>0</status>
+					<priority>4</priority>
+					<comments>DANGER</comments>
+				</trigger>
+				<trigger>
+					<description>Tablespaces on {HOSTNAME}</description>
+					<type>0</type>
+					<expression>{Template_Oracle:tbl_space.str(none)}=0</expression>
+					<url></url>
+					<status>0</status>
+					<priority>4</priority>
+					<comments></comments>
+				</trigger>
+				<trigger>
+					<description>Uptime on {HOSTNAME}</description>
+					<type>0</type>
+					<expression>{Template_Oracle:uptime.last(0)}&lt;1</expression>
+					<url></url>
+					<status>0</status>
+					<priority>4</priority>
+					<comments></comments>
+				</trigger>
+				<trigger>
+					<description>User Locked on {HOSTNAME}</description>
+					<type>0</type>
+					<expression>{Template_Oracle:users_locked.str(none)}=0</expression>
+					<url></url>
+					<status>0</status>
+					<priority>4</priority>
+					<comments></comments>
+				</trigger>
+			</triggers>
+			<items/>
+			<templates/>
+			<graphs/>
+			<macros/>
+		</host>
+	</hosts>
+	<dependencies/>
+</zabbix_export>
