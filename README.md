@@ -6,6 +6,11 @@
 修改了 `Sender.java`, 并把编译好的 class 文件, 添加到 orabbix-1.2.3.jar 中.
 并打成了个 image.
 
+## 使用方式
+
+首先执行 `build.sh`, 这个脚本会编译 `Sender.java`, 并把 class 文件,添加到原来的
+jar 包中, 放到 orabbix 目录下, 再打成一个 image `zabbix-agent-oralce`.
+
 ## Docker Environment Variables
 
 - ZBX_SERVER_HOST zabbix server 地址, 默认为 127.0.0.1
